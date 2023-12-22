@@ -1,0 +1,37 @@
+load_data:
+  storage_type: hdfs
+  storage_params:
+    hdfs_host: 172.1.0.4
+    hdfs_port: 9000
+    data_path: /data
+    data_format: nifti
+  database_type: hbase
+  hbase_params:
+    hbase_host: 172.1.0.4
+    hbase_port: 2181
+    table_name: test
+
+preprocessing:
+  preprocessing_type: smoothing
+  preprocessing_params:
+    sigma: 1.0
+    
+decomposition:
+  decomposition_type: pca
+  decomposition_params:
+    n_components: 10
+
+training_strategy_cinfiguration:
+  training_type: svm
+  training_params:
+    kernel: linear
+    C: 1.0
+  train_test_val_split_params:
+    val_size: 0.2
+    test_size: 0.2
+    random_state: 42
+    shuffle: True
+    stratify: None
+  grid_search_params:
+    type: random
+    n_iter: 10
