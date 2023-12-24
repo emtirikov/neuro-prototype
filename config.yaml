@@ -1,31 +1,38 @@
 load_data:
   storage_type: hdfs
   storage_params:
-    hdfs_host: 172.1.0.4
+    hdfs_host: namenode
     hdfs_port: 9000
-    data_path: /data
+    data_path: 
+      - /data/102109_tfMRI_EMOTION_LR.nii.gz
+      - /data/102614_tfMRI_EMOTION_LR.nii.gz
     data_format: nifti
-  database_type: hbase
-  hbase_params:
-    hbase_host: 172.1.0.4
-    hbase_port: 2181
-    table_name: test
+  database_type: hive
+  database_params:
+    database_host: hive-server
+    database_port: 10000
+    database_name: neuro
+    table_name: metadata
 
 preprocessing:
-  preprocessing_type: smoothing
-  preprocessing_params:
+  method: smoothing
+  params:
     sigma: 1.0
     
 decomposition:
-  decomposition_type: pca
+  method: pca
   decomposition_params:
     n_components: 10
 
-training_strategy_cinfiguration:
-  training_type: svm
-  training_params:
+training_strategy_configuration:
+  training_model: svm
+  model_type: classification #classification or regression
+  label_name: sex
+  evaluator: BinaryClassificationEvaluator
+  model_params:
     kernel: linear
     C: 1.0
+    evaluator: BinaryClassificationEvaluator
   train_test_val_split_params:
     val_size: 0.2
     test_size: 0.2

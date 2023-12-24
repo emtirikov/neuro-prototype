@@ -1,0 +1,12 @@
+pyspark
+pyhive
+nibabel
+nilearn
+scikit-learn
+pandas
+numpy
+thrift
+thrift_sasl
+hdfs
+pyyaml
+xgboost
