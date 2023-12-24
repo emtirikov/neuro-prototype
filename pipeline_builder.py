@@ -81,7 +81,7 @@ class Pipeline:
         transformed_data.select(transformed_data["features"]).show(truncate=False)
 
         grid_search = GridSearch(self.config)
-        model, result, train_data, test_data, validation_data = grid_search.run(transformed_data)
+        model, result, train_data, test_data, validation_data = grid_search.transform(transformed_data)
         
 
 if __name__ == "__main__":

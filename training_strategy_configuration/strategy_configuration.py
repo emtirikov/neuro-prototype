@@ -10,7 +10,10 @@ class GridSearch:
     def __init__(self, config):
         self.config = config
 
-    def run(self, image_data):
+    def fit(self, data):
+        pass
+
+    def transform(self, image_data):
         if self.config["training_strategy_configuration"]["model_type"] == "classification":
             column = self.config["training_strategy_configuration"]["model_type"]
             indexer = StringIndexer(inputCol="sex", outputCol="l_index")
