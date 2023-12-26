@@ -10,38 +10,6 @@ from pyspark.ml.linalg import Vectors, VectorUDT
 from pyspark.sql.functions import udf
 import yaml
 
-def create_fake_data_for_test(data, spark, number=10):
-    #TEMP - remove this function
-    real_subjects = list(data.keys())
-    new_data = []
-    subjects = np.unique(np.random.randint(1, 50000, 1000))[:number]
-    j = 0
-    for i in range(len(subjects)):
-        temp = data[real_subjects[j%len(data)]]["data"]
-        a = [str(subjects[i]),
-             temp + np.random.randint(1, 5000, len(temp)),
-             data[real_subjects[j%len(data)]]["sex"]]
-        a[1] = a[1][:40].tolist()
-        a[1] = [float(k) for k in a[1]]
-        new_data.append(a)
-        
-        j+=1
-    
-    schema = StructType([
-        StructField("subject", StringType(), True),
-        StructField("data", ArrayType(FloatType()), True),
-        StructField("sex", StringType(), True)
-    ])
-    df = spark.createDataFrame(new_data, schema)
-    list_to_vector_udf = udf(lambda l: Vectors.dense(l), VectorUDT())
-    df = df.select(
-        df["subject"], 
-        list_to_vector_udf(df["data"]).alias("data"),
-        df["sex"], 
-    )
-
-    return df
-    
 
 class Pipeline:
     def __init__(self, config_path):
@@ -71,10 +39,6 @@ class Pipeline:
         load_data = LoadData(self.config, self.spark_context)
         data = load_data.load_data()
 
-        #TODO remove
-        data = create_fake_data_for_test(data, self.spark_session)
-        print(4)
-        
         decomposition_model = Decomposition(config=self.config)
         decomposition_model.fit(data)
         transformed_data = decomposition_model.transform(data)
