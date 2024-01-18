@@ -1,0 +1,8 @@
+storage_type: hdfs
+storage_params:
+  hdfs_host: namenode
+  hdfs_port: 9000
+database_type: hive
+database_params:
+  database_host: hive-server
+  database_port: 10000

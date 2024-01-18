@@ -1,16 +1,12 @@
 load_data:
   storage_type: hdfs
   storage_params:
-    hdfs_host: namenode
-    hdfs_port: 9000
-    data_path: 
+    data_path:
       - /data/102109_tfMRI_EMOTION_LR.nii.gz
       - /data/102614_tfMRI_EMOTION_LR.nii.gz
     data_format: nifti
   database_type: hive
   database_params:
-    database_host: hive-server
-    database_port: 10000
     database_name: neuro
     table_name: metadata
 

@@ -49,6 +49,6 @@ class Pipeline:
         
 
 if __name__ == "__main__":
-    pipeline = Pipeline("./config.yaml")
+    pipeline = Pipeline("config_user.yaml")
     pipeline.run()
         

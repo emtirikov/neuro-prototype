@@ -39,7 +39,7 @@ class LoadData():
         
 
 if __name__ == "__main__":
-    path = "../config.yaml"
+    path = "../config_user.yaml"
     loader = LoadData(path)
     data = loader.load_data()
     print(len(data))
