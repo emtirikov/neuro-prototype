@@ -1,0 +1,8 @@
+#draggable-button {
+  position: absolute;
+  margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  padding: 10px 20px;
+}
