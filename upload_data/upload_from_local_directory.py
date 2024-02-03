@@ -3,9 +3,10 @@ import yaml
 from pyspark.sql import SparkSession
 from pyspark.context import SparkContext
 from pyspark.conf import SparkConf
+from upload_data.upload_data import UploadData
 
 
-class UploadData:
+class LocalLoader(UploadData):
     def __init__(self, config):
         self.config = config
         self._create_spark_session()
@@ -27,20 +28,20 @@ class UploadData:
             .config(conf=conf) \
             .getOrCreate()
 
-    def run(self, source_path, destination_path):
+    def upload(self, source, destination):
         """
         function to upload data from local directory to hdfs
-        :param source_path: local directory path
-        :param destination_path: hdfs path
+        :param source: local directory path
+        :param destination: hdfs path
         :return:
         None
         """
         # create a spark session
         spark = SparkSession.builder.appName("UploadData").getOrCreate()
         # read the data from local directory
-        data = spark.read.format("binaryFile").option("path", source_path).load()
+        data = spark.read.format("binaryFile").option("path", source).load()
         # save the data to hdfs
-        data.write.format("binaryFile").option("path", destination_path).save()
+        data.write.format("binaryFile").option("path", destination).save()
         # stop spark session
         spark.stop()
 

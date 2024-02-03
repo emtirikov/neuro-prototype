@@ -1,12 +1,13 @@
 from pyhive import hive
+from load_data.database.database import Database
 
-class HiveReader:
+class HiveReader(Database):
     def __init__(self, host="localhost", port=10000, database="neuro"):
         self.host = host
         self.port = port
         self.database = database
 
-    def get_data(self, query):
+    def load_data(self, query) -> dict:
         conn = hive.Connection(host=self.host, port=self.port, database=self.database)
         cursor = conn.cursor()
         cursor.execute(query)
@@ -21,8 +22,8 @@ class HiveReader:
         cursor.close()
         conn.close()
         return result
-    
+
 if __name__=="__main__":
     reader = HiveReader()
-    data = reader.get_data("select * from metadata")
+    data = reader.load_data("select * from metadata")
     print(data)
