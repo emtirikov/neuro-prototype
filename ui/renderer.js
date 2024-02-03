@@ -1,6 +1,9 @@
 const createButton = document.getElementById('create-button');
 const deleteButton = document.getElementById('delete-button');
+const createArrowButton = document.getElementById('create-elements-button');
+const deleteArrowButton = document.getElementById('delete-elements-button');
 let buttonCount = 0;
+let arrowCount = 0;
 
 createButton.addEventListener('click', () => {
   const newButton = document.createElement('button');
@@ -23,25 +26,44 @@ deleteButton.addEventListener('click', () => {
   }
 });
 
-function makeDraggable(button) {
+createArrowButton.addEventListener('click', () => {
+  const newArrow = document.createElement('div');
+  newArrow.id = `draggable-arrow-${arrowCount++}`;
+  newArrow.style.position = 'absolute';
+  newArrow.style.margin = '25px 0';
+  newArrow.style.width = '100px';
+  newArrow.style.height = '2px';
+  newArrow.style.backgroundColor = 'red';
+  document.body.appendChild(newArrow);
+  makeDraggable(newArrow);
+});
+
+deleteArrowButton.addEventListener('click', () => {
+  if (arrowCount > 0) {
+    const arrowToRemove = document.getElementById(`draggable-arrow-${--arrowCount}`);
+    document.body.removeChild(arrowToRemove);
+  }
+});
+
+function makeDraggable(element) {
   let isDragging = false;
   let offsetX, offsetY;
 
-  button.addEventListener('pointerdown', (event) => {
+  element.addEventListener('pointerdown', (event) => {
     isDragging = true;
-    offsetX = event.clientX - button.getBoundingClientRect().left;
-    offsetY = event.clientY - button.getBoundingClientRect().top;
+    offsetX = event.clientX - element.getBoundingClientRect().left;
+    offsetY = event.clientY - element.getBoundingClientRect().top;
     event.preventDefault();
   });
 
-  button.addEventListener('dblclick', () => {
-    console.log('Button double clicked');
+  element.addEventListener('dblclick', () => {
+    console.log('Element double clicked');
   });
 
   document.addEventListener('pointermove', (event) => {
     if (isDragging) {
-      button.style.left = `${event.clientX - offsetX}px`;
-      button.style.top = `${event.clientY - offsetY}px`;
+      element.style.left = `${event.clientX - offsetX}px`;
+      element.style.top = `${event.clientY - offsetY}px`;
     }
   });
 
@@ -49,6 +71,3 @@ function makeDraggable(button) {
     isDragging = false;
   });
 }
-
-// Make the initial button draggable
-makeDraggable(document.getElementById('draggable-button'));
