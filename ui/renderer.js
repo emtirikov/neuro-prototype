@@ -6,7 +6,12 @@ const stageContent = document.getElementById('stage-content');
 let buttonCount = 0;
 let lastClickedCircle = null;
 let lastClickedDraggableButton = null;
+// renderer.js
+const downloadButton = document.getElementById('download-button');
 
+downloadButton.addEventListener('click', () => {
+  window.electron.send('open-download-window');
+});
 createButton.addEventListener('click', () => {
   const newButton = document.createElement('button');
   newButton.id = `draggable-button-${buttonCount++}`;
