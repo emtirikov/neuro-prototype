@@ -1,0 +1,37 @@
+[
+  {"stage_name": "preprocessing",
+    "methods": [
+      {
+        "name": "smoothing",
+        "parameters": {
+          "window_size": 5,
+          "method": "mean"
+        }
+      },
+      {
+        "name": "normalization",
+        "parameters": {
+          "method": "zscore"
+        }
+      }
+
+    ]},
+    {"stage_name": "feature_extraction",
+        "methods": [
+          {"name": "PCA",
+          "parameters": {
+            "n_components": 2,
+            "svd_solver": "auto"
+          }},
+          {"name": "tSNE",
+            "parameters": {
+                "n_components": 2,
+                "perplexity": 30
+            }},
+          {"name":  "region_extraction",
+            "parameters": {
+              "method": "kmeans",
+              "n_components": 2
+            }}
+        ]}
+]
