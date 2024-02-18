@@ -2,9 +2,20 @@
 const path = require('path');
 const { app, BrowserWindow, ipcMain } = require('electron')
 const contextMenu = require('electron-context-menu');
+const { exec } = require('child_process');
 
 contextMenu({
  showSaveImageAs: true
+});
+
+ipcMain.handle('runBashScript', (event, scriptPath) => {
+  exec(`bash ${scriptPath}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Execution error: ${error}`);
+      return;
+    }
+    return { stdout, stderr };
+  });
 });
 
 function createWindow () {

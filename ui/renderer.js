@@ -129,7 +129,7 @@ function makeDraggable(element) {
         stageSelection.value = element.dataset.stage;
         methodSelection.value = element.dataset.method;
       }
-        lastClickedDraggableButton = element;
+      lastClickedDraggableButton = element;
     }
 
   });
@@ -189,6 +189,7 @@ async function generateDropDownOptions(selectedStage) {
     // let stageContent = document.getElementById('stage-content');
     stageContent.innerHTML = '';
     let methodSelection = document.createElement('select');
+    methodSelection.id = "method-selection";
     createMethodParamsInput(methodSelection, data);
     stageContent.appendChild(methodSelection);
     let methodParamsDiv = document.createElement('div');
