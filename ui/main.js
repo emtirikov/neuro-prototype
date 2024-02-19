@@ -3,6 +3,8 @@ const path = require('path');
 const { app, BrowserWindow, ipcMain } = require('electron')
 const contextMenu = require('electron-context-menu');
 const { exec } = require('child_process');
+const fs = require('fs');
+
 
 contextMenu({
  showSaveImageAs: true
@@ -18,10 +20,14 @@ ipcMain.handle('runBashScript', (event, scriptPath) => {
   });
 });
 
+ipcMain.handle('writeFile', (event, path, data, options) => {
+  return fs.promises.writeFile(path, data, options);
+});
+
 function createWindow () {
   console.log('Creating new window');
   const win = new BrowserWindow({
-    width: 800,
+    width: 1200,
     height: 600,
     webPreferences: {
       nodeIntegration: false,
