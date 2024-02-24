@@ -158,36 +158,15 @@ function makeDraggable(element) {
   }});
 
   element.addEventListener("dblclick", (event) => {
-    if (lastClickedDraggableButton === null) {
-      lastClickedDraggableButton = element;
-    }
-    else {
-        const stageSelection = document.getElementById('stage-selection');
-        lastClickedDraggableButton.dataset.stage = stageSelection.value;
-        const methodSelection = document.getElementById('method-selection');
-        lastClickedDraggableButton.dataset.method = methodSelection.value;
-        let methodParamsDiv = document.getElementById('method-params');
-        let methodParams = new Map();
+      // const stage = element.dataset.stage;
+      // const method = element.dataset.method;
+      // const params = JSON.parse(element.dataset.params);
+      const stage = "preprocessing";
+      const method = "smoothing";
+      const params = {"method": "value1"};
 
-        for (let i = 0; i < methodParamsDiv.children.length; i++) {
-            let childElement = methodParamsDiv.children[i];
-            methodParams.set(childElement.placeholder, childElement.value);
-        }
-        lastClickedDraggableButton.dataset.params = JSON.stringify(Array.from(methodParams.entries()));
-
-        if (element.dataset.stage !== undefined && element.dataset.method !== undefined) {
-            stageSelection.value = element.dataset.stage;
-            let methodParamsFull = {};
-
-            methodParamsFull["name"] = element.dataset.method;
-            methodParamsFull["parameters"] = Object.fromEntries(JSON.parse(element.dataset.params));
-            generateDropDownOptions(element.dataset.stage,
-                element.dataset.method, [methodParamsFull]);
-        }
-      lastClickedDraggableButton = element;
-    }
-
-  });
+      window.electron.send('open-config-window', { stage, method, params, id: element.id });
+    });
 
   document.addEventListener('pointerup', () => {
     isDragging = false;

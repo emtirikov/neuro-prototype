@@ -16,7 +16,7 @@
       }
 
     ]},
-    {"stage_name": "feature_extraction",
+    {"stage_name": "decomposition",
         "methods": [
           {"name": "PCA",
           "parameters": {
@@ -33,5 +33,70 @@
               "method": "kmeans",
               "n_components": 2
             }}
-        ]}
+        ]},
+  {
+    "stage_name": "training",
+    "methods_model": [
+      {
+        "name": "kmeans",
+        "parameters": {
+          "n_clusters": 3
+        }
+      },
+      {
+        "name": "dbscan",
+        "parameters": {
+          "eps": 0.5,
+          "min_samples": 5
+        }
+      },
+      {
+        "name": "hierarchical",
+        "parameters": {
+          "n_clusters": 3,
+          "linkage": "ward"
+        }
+      }
+    ],
+    "methods_evaluation": [
+      {
+        "name": "silhouette_score",
+        "parameters": {
+          "metric": "euclidean"
+        }
+      },
+      {
+        "name": "davies_bouldin_score",
+        "parameters": {
+          "metric": "euclidean"
+        }
+      },
+      {
+        "name": "calinski_harabasz_score",
+        "parameters": {
+          "metric": "euclidean"
+        }
+      }
+    ],
+    "methods_tuning": [
+      {
+        "name": "grid_search",
+        "parameters": {
+          "param_grid": {
+            "n_clusters": [2, 3, 4, 5],
+            "linkage": ["ward", "complete", "average", "single"]
+          }
+        }
+      },
+      {
+        "name": "random_search",
+        "parameters": {
+          "param_distributions": {
+            "n_clusters": [2, 3, 4, 5],
+            "linkage": ["ward", "complete", "average", "single"]
+          }
+        }
+      }
+    ]
+  }
 ]

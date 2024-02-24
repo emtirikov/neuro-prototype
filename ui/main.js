@@ -58,4 +58,21 @@ ipcMain.on('open-download-window', (event, arg) => {
   createDownloadWindow();
 })
 
+ipcMain.on('open-config-window', (event, config) => {
+  const win = new BrowserWindow({
+    width: 400,
+    height: 200,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+
+  win.loadFile('config.html');
+  win.webContents.once('did-finish-load', () => {
+    win.webContents.send('init-config', config);
+  });
+});
+
 app.whenReady().then(createWindow)
