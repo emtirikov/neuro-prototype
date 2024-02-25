@@ -4,6 +4,7 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const contextMenu = require('electron-context-menu');
 const { exec } = require('child_process');
 const fs = require('fs');
+let mainWindow;
 
 
 contextMenu({
@@ -26,7 +27,7 @@ ipcMain.handle('writeFile', (event, path, data, options) => {
 
 function createWindow () {
   console.log('Creating new window');
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 600,
     webPreferences: {
@@ -36,7 +37,7 @@ function createWindow () {
     }
   })
 
-  win.loadFile('index.html')
+  mainWindow.loadFile('index.html')
 }
 
 function createDownloadWindow () {
@@ -73,6 +74,10 @@ ipcMain.on('open-config-window', (event, config) => {
   win.webContents.once('did-finish-load', () => {
     win.webContents.send('init-config', config);
   });
+});
+
+ipcMain.on('update-config', (event, config) => {
+  mainWindow.webContents.send('update-config', config);
 });
 
 app.whenReady().then(createWindow)

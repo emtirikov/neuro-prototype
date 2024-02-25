@@ -1,9 +1,13 @@
 // config.js
 const stageSelection = document.getElementById('stage-selection');
 const stageContent = document.getElementById('stage-content');
+const submitButton = document.getElementById('submit-button');
+let draggable_button_id = null;
+
 window.electron.on('init-config', (config) => {
     // TODO: Initialize the form with the passed configuration
     console.log('Initializing config form with:', config);
+    draggable_button_id = config.id;
     if (config.stage === null || config.method === null || config.params === null) {
         console.log('Config is not defined');
         generateDropDownOptions("preprocessing")
@@ -12,17 +16,33 @@ window.electron.on('init-config', (config) => {
     const stage = config.stage;
     const method = config.method;
     const params = config.params;
-    generateDropDownOptions(stage, method, params);
+    // log params type
+    console.log(params);
+    generateDropDownOptions(stage, method, [params]);
 });
 
 document.getElementById('config-form').addEventListener('submit', (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  const stage = document.getElementById('stage-selection').value;
-  const method = document.getElementById('method-selection').value;
-  const params = {}; // TODO: Get the parameters from the form
+    const stage = document.getElementById('stage-selection').value;
+    const method = document.getElementById('method-selection').value;
+    // const params = {}; // TODO: Get the parameters from the form
+    let methodParamsDiv = document.getElementById('method-params');
+    let methodParams = new Map();
 
-  window.electron.send('update-config', { stage, method, params });
+    for (let i = 0; i < methodParamsDiv.children.length; i++) {
+        let childElement = methodParamsDiv.children[i];
+        methodParams.set(childElement.placeholder, childElement.value);
+    }
+
+    let params = JSON.stringify(Array.from(methodParams.entries()));
+    let methodParamsFull = {};
+    methodParamsFull["name"] = method;
+    methodParamsFull["parameters"] = Object.fromEntries(JSON.parse(params));
+
+
+    console.log(draggable_button_id);
+  window.electron.send('update-config', { stage, method, params: methodParamsFull, id: draggable_button_id});
 });
 
 stageSelection.addEventListener('change', () => {
@@ -32,7 +52,6 @@ stageSelection.addEventListener('change', () => {
 
 async function generateDropDownOptions(selectedStage, selectedMethod=null, selectedParams=null) {
     let data = await readJsonFile('methods.json');
-    console.log(data);
     // let stageContent = document.getElementById('stage-content');
     stageContent.innerHTML = '';
     let methodSelection = document.createElement('select');
@@ -76,8 +95,6 @@ function changeMethodParamsInput(element, methods) {
   const methodParamsDiv = document.getElementById('method-params');
 
     methodParamsDiv.innerHTML = '';
-    console.log(33333);
-    console.log(methods);
     for (let method of methods) {
       if (method['name'] === element.value) {
         let params = new Map(Object.entries(method['parameters']));

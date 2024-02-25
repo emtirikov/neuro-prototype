@@ -1,0 +1,18 @@
+<!-- config.html -->
+<!DOCTYPE html>
+<html>
+  <body>
+    <form id="config-form">
+      <label for="stage-selection">Choose stage:</label>
+      <select id="stage-selection">
+        <option value="preprocessing">Preprocessing</option>
+        <option value="decomposition">Decomposition</option>
+        <option value="feature_extraction">Feature extraction</option>
+        <option value="training">Training</option>
+      </select>
+      <div id="stage-content"></div>
+      <button type="submit" id="submit-button">Save</button>
+    </form>
+    <script src="config.js"></script>
+  </body>
+</html>

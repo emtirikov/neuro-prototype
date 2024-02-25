@@ -1,12 +1,10 @@
+console.log('renderer.js loaded');
+
 const createButton = document.getElementById('create-button');
 const deleteButton = document.getElementById('delete-button');
 const firstPart = document.getElementById('first-part');
-const stageSelection = document.getElementById('stage-selection');
-const stageContent = document.getElementById('stage-content');
 let buttonCount = 0;
 let lastClickedCircle = null;
-let lastClickedDraggableButton = null;
-// renderer.js
 const downloadButton = document.getElementById('download-button');
 
 const runButton = document.getElementById('run-button');
@@ -45,7 +43,9 @@ downloadButton.addEventListener('click', () => {
 createButton.addEventListener('click', () => {
   const newButton = document.createElement('button');
   newButton.id = `draggable-button-${buttonCount++}`;
-  newButton.innerText = 'Draggable Button';
+  const buttonText = document.createElement('span');
+  buttonText.innerText = 'Draggable Button';
+  newButton.appendChild(buttonText);
   newButton.style.position = 'absolute';
   newButton.style.margin = '25px 0';
   newButton.style.fontSize = '0.9em';
@@ -96,6 +96,10 @@ createButton.addEventListener('click', () => {
     }
   });
   newButton.appendChild(rightCircle);
+
+  newButton.dataset.stage = null;
+    newButton.dataset.method = null;
+    newButton.dataset.params = null;
 });
 
 // Rest of the code remains the same
@@ -158,20 +162,33 @@ function makeDraggable(element) {
   }});
 
   element.addEventListener("dblclick", (event) => {
-      // const stage = element.dataset.stage;
-      // const method = element.dataset.method;
-      // const params = JSON.parse(element.dataset.params);
-      const stage = "preprocessing";
-      const method = "smoothing";
-      const params = {"method": "value1"};
+      const stage = element.dataset.stage;
+      const method = element.dataset.method;
+      const params = JSON.parse(element.dataset.params);
+      // const stage = "preprocessing";
+      // const method = "smoothing";
+      // const params = {"method": "value1"};
 
       window.electron.send('open-config-window', { stage, method, params, id: element.id });
+
     });
 
   document.addEventListener('pointerup', () => {
     isDragging = false;
   });
 }
+
+window.electron.on('update-config', (config) => {
+  console.log('Received updated config');
+  console.log(config);
+  const button = document.getElementById(config.id);
+  button.dataset.stage = config.stage;
+  button.dataset.method = config.method;
+  button.dataset.params = JSON.stringify(config.params);
+
+  const buttonText = button.querySelector('span');
+  buttonText.innerText = config.stage;
+});
 
 function drawArrow(element1, element2) {
   const leftCircle1 = element1.querySelector('div:last-child');
@@ -211,80 +228,4 @@ function drawArrow(element1, element2) {
   element1.outLine = line;
   element2.inLine = line;
   element2.arrowhead = arrowhead;
-}
-function readJsonFile(file_path) {
-    return fetch(file_path)
-        .then(response => response.json())
-        .then(data => {
-            return new Map(Object.entries(data));
-        })
-        .catch(error => console.error(`Error: ${error}`));
-}
-
-//function to generate options for stage selection
-async function generateDropDownOptions(selectedStage, selectedMethod=null, selectedParams=null) {
-    let data = await readJsonFile('methods.json');
-    console.log(data);
-    // let stageContent = document.getElementById('stage-content');
-    stageContent.innerHTML = '';
-    let methodSelection = document.createElement('select');
-    methodSelection.id = "method-selection";
-    stageContent.appendChild(methodSelection);
-    let methodParamsDiv = document.createElement('div');
-    methodParamsDiv.id = "method-params";
-    stageContent.appendChild(methodParamsDiv);
-
-    for (let [stage_key, stage_value] of data) {
-        if (stage_value['stage_name'] === selectedStage) {
-            createMethodParamsInput(methodSelection, stage_value['methods']);
-
-            for (let method of stage_value['methods']) {
-                let option = document.createElement('option');
-                option.value = method["name"];
-                option.text = method["name"];
-                methodSelection.appendChild(option);
-            }
-            if (selectedMethod !== null) {
-                methodSelection.value = selectedMethod;
-                changeMethodParamsInput(methodSelection, selectedParams)
-            }
-            else {
-                methodSelection.value = stage_value['methods'][0]['name'];
-                changeMethodParamsInput(methodSelection, [stage_value['methods'][0]]);
-            }
-
-        }
-    }
-}
-//function to trigger the generation of options for stage selection
-stageSelection.addEventListener('change', () => {
-    let selectedStage = stageSelection.value;
-    generateDropDownOptions(selectedStage);
-});
-
-function createMethodParamsInput(element, methods) {
-
-  element.addEventListener("change", (event) => {
-    changeMethodParamsInput(element, methods);
-  });
-}
-
-function changeMethodParamsInput(element, methods) {
-  const methodParamsDiv = document.getElementById('method-params');
-
-    methodParamsDiv.innerHTML = '';
-    console.log(33333);
-    console.log(methods);
-    for (let method of methods) {
-      if (method['name'] === element.value) {
-        let params = new Map(Object.entries(method['parameters']));
-        for (let [param_key, param_value] of params) {
-            let input = document.createElement('input');
-            input.type = "text";
-            input.placeholder = param_key;
-            input.value = param_value;
-            methodParamsDiv.appendChild(input);
-        }
-      }
-    }
 }
