@@ -10,3 +10,4 @@ thrift_sasl
 hdfs
 pyyaml
 xgboost
+flask

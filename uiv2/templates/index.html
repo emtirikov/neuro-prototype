@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Website</title>
+</head>
+
+<body>
+  <link rel="stylesheet" type="text/css" href="../static/beautiful.css" />
+    <div class="col-right">
+      <div class="menu">
+        <ul>
+          <li class="selected">Pipeline</li>
+          <li>Visualization</li>
+        </ul>
+      </div>
+    </div>
+    <div id="pipeline" style="display:none">
+        <iframe id="pipeline-iframe" src="http://localhost:18080/pipeline"></iframe>
+    </div>
+    <div id="visualization" style="display:none">
+        <iframe id="visualization-iframe" src="http://localhost:8000"></iframe>
+    </div>
+
+    <script>
+        document.querySelector('li').addEventListener('click', function() {
+            document.getElementById('pipeline').style.display = 'block';
+            document.getElementById('visualization').style.display = 'none';
+        });
+        document.querySelectorAll('li')[1].addEventListener('click', function() {
+            document.getElementById('pipeline').style.display = 'none';
+            document.getElementById('visualization').style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
